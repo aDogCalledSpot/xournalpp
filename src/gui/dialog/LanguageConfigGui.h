@@ -13,6 +13,7 @@
 
 #include <gdk/gdk.h>
 #include <memory>
+#include <vector>
 #include "gui/GladeGui.h"
 
 class Settings;
@@ -30,7 +31,8 @@ public:
     void show(GtkWindow* parent) override {};
 
 private:
+    std::vector<std::string> availableLocales;
 
-private:
+
     Settings* settings;
 };
