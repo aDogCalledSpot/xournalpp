@@ -462,6 +462,8 @@ void Settings::parseItem(xmlDocPtr doc, xmlNodePtr cur) {
         this->latexSettings.globalTemplatePath = fs::u8path(v);
     } else if (xmlStrcmp(name, reinterpret_cast<const xmlChar*>("latexSettings.genCmd")) == 0) {
         this->latexSettings.genCmd = reinterpret_cast<char*>(value);
+    } else if (xmlStrcmp(name, reinterpret_cast<const xmlChar*>("preferredLocale")) == 0) {
+        this->preferredLocale = reinterpret_cast<char*>(value);
     }
 
     xmlFree(name);
@@ -1667,6 +1669,9 @@ void Settings::setTrySelectOnStrokeFiltered(bool enabled) { this->trySelectOnStr
 
 auto Settings::getTrySelectOnStrokeFiltered() const -> bool { return this->trySelectOnStrokeFiltered; }
 
+auto Settings::setPreferredLocale(std::string const& locale) -> void { this->preferredLocale = locale; }
+
+auto Settings::getPreferredLocale() const -> std::string { return this->preferredLocale; }
 
 void Settings::setIgnoredStylusEvents(int numEvents) {
     if (this->numIgnoredStylusEvents == numEvents) {
