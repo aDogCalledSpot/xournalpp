@@ -1,11 +1,18 @@
+#include <algorithm>
+
 #include "LanguageConfigGui.h"
-#include "i18n.h"
 #include "control/settings/Settings.h"
-#include "config-paths.h"
 #include "filesystem.h"
 #include "config.h"
-#include <iostream>
-#include <algorithm>
+#include "config-paths.h"
+#include "XojMsgBox.h"
+#include "StringUtils.h"
+#include "i18n.h"
+
+#ifdef _WIN32
+#undef PACKAGE_LOCALE_DIR
+#define PACKAGE_LOCALE_DIR "../share/locale/"
+#endif
 
 LanguageConfigGui::LanguageConfigGui(GladeSearchpath* gladeSearchPath, GtkWidget* w, Settings* settings) :
         GladeGui(gladeSearchPath, "settingsLanguageConfig.glade", "offscreenwindow"), settings(settings) {
@@ -15,13 +22,26 @@ LanguageConfigGui::LanguageConfigGui(GladeSearchpath* gladeSearchPath, GtkWidget
     gtk_widget_show_all(dropdown);
 
     // Fetch available locales
-    fs::path baseLocaleDir(PACKAGE_LOCALE_DIR);
-    for (auto const& d: fs::directory_iterator(baseLocaleDir)) {
-        if (fs::exists(d.path() / "LC_MESSAGES" / (std::string(GETTEXT_PACKAGE) + ".mo"))) {
-            availableLocales.push_back(d.path().filename().u8string());
+    try {
+        fs::path baseLocaleDir(PACKAGE_LOCALE_DIR);
+        for (auto const& d: fs::directory_iterator(baseLocaleDir)) {
+            if (fs::exists(d.path() / "LC_MESSAGES" / (std::string(GETTEXT_PACKAGE) + ".mo"))) {
+                availableLocales.push_back(d.path().filename().u8string());
+            }
         }
+    } catch (fs::filesystem_error const &e) {
+        XojMsgBox::showErrorToUser(nullptr, e.what());
     }
     std::sort(availableLocales.begin(), availableLocales.end());
+
+    // No pot file for English
+    if (auto enPos = std::lower_bound(availableLocales.begin(), availableLocales.end(), "en");
+        enPos != availableLocales.end() && !StringUtils::startsWith(*enPos, "en")) {
+        availableLocales.insert(enPos, "en");
+    }
+
+    // Default
+    availableLocales.insert(availableLocales.begin(), _("System Default"));
 
     auto gtkAvailableLocales = gtk_list_store_new(1, G_TYPE_STRING);
     for (auto const& i : availableLocales) {
@@ -36,7 +56,8 @@ LanguageConfigGui::LanguageConfigGui(GladeSearchpath* gladeSearchPath, GtkWidget
 
 void LanguageConfigGui::saveSettings() {
     gint pos = gtk_combo_box_get_active(GTK_COMBO_BOX(get("languageSettingsDropdown")));
+    auto pref = (pos == 0) ? "" : availableLocales[pos];
 
-    settings->setPreferredLocale(availableLocales[pos]);
+    settings->setPreferredLocale(pref);
     settings->customSettingsChanged();
 }

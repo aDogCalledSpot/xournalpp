@@ -21,7 +21,6 @@
 #include "LanguageConfigGui.h"
 
 class ButtonConfigGui;
-class LanguageConfigGui;
 
 class SettingsDialog: public GladeGui {
 public:
