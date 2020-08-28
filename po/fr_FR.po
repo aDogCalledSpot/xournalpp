@@ -2924,3 +2924,23 @@ msgstr "trè_s épais"
 msgid "with libgtk"
 msgstr "avec libgtk"
 
+
+#: ../ui/settings.glade:4490
+msgid "<i>Select language (requires restart)</i>"
+msgstr "<i>Choisir une langue (nécessite un redémarrage)</i>"
+
+#: ../ui/settings.glade:4527 ../ui/settings.glade:4575
+msgid "Language"
+msgstr "Langue"
+
+#: ../ui/settings.glade:4545
+msgid "Language Settings"
+msgstr "Paramètres de langue"
+
+#: ../src/gui/dialog/LanguageConfigGui.cpp:51
+msgid "System Default"
+msgstr "réglage par défaut"
+
+#: ../src/gui/dialog/LanguageConfigGui.cpp:68
+msgid "Previously selected language not available anymore!"
+msgstr "Le choix de langue n'est plus disponible!"

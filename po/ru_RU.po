@@ -2923,3 +2923,22 @@ msgstr "очень _жирный"
 msgid "with libgtk"
 msgstr ""
 
+#: ../ui/settings.glade:4490
+msgid "<i>Select language (requires restart)</i>"
+msgstr "<i>выберите язык (требуется перезапуск)</i>"
+
+#: ../ui/settings.glade:4527 ../ui/settings.glade:4575
+msgid "Language"
+msgstr "язык"
+
+#: ../ui/settings.glade:4545
+msgid "Language Settings"
+msgstr "настройка языка"
+
+#: ../src/gui/dialog/LanguageConfigGui.cpp:51
+msgid "System Default"
+msgstr "система по умолчанию"
+
+#: ../src/gui/dialog/LanguageConfigGui.cpp:68
+msgid "Previously selected language not available anymore!"
+msgstr "Ранее выбранный язык больше недоступен!"
