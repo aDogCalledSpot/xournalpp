@@ -51,6 +51,20 @@ LanguageConfigGui::LanguageConfigGui(GladeSearchpath* gladeSearchPath, GtkWidget
 
     }
     gtk_combo_box_set_model(GTK_COMBO_BOX(dropdown), GTK_TREE_MODEL(gtkAvailableLocales));
+
+
+    // Set the current locale if previously selected
+    auto prefPos = availableLocales.begin();
+    if (auto preferred = settings->getPreferredLocale(); !preferred.empty()) {
+        prefPos = std::lower_bound(availableLocales.begin(), availableLocales.end(), preferred);
+        if (*prefPos != preferred) {
+            XojMsgBox::showErrorToUser(nullptr, _("Previously selected language not available anymore!"));
+
+            // Use system default
+            prefPos = availableLocales.begin();
+        }
+    }
+    gtk_combo_box_set_active(GTK_COMBO_BOX(dropdown), prefPos - availableLocales.begin());
 }
 
 
