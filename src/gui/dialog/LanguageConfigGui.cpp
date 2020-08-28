@@ -14,6 +14,12 @@
 #define PACKAGE_LOCALE_DIR "../share/locale/"
 #endif
 
+#ifdef __APPLE__
+#include "Stacktrace.h"
+#undef PACKAGE_LOCALE_DIR
+const char* PACKAGE_LOCALE_DIR = (Stacktrace::getExePath() / "../Resources/share/locale").c_str();
+#endif
+
 LanguageConfigGui::LanguageConfigGui(GladeSearchpath* gladeSearchPath, GtkWidget* w, Settings* settings) :
         GladeGui(gladeSearchPath, "settingsLanguageConfig.glade", "offscreenwindow"), settings(settings) {
     auto dropdown = get("languageSettingsDropdown");
