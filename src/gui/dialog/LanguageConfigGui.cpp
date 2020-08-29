@@ -1,12 +1,14 @@
+#include "LanguageConfigGui.h"
+
 #include <algorithm>
 
-#include "LanguageConfigGui.h"
 #include "control/settings/Settings.h"
-#include "filesystem.h"
-#include "config.h"
-#include "config-paths.h"
-#include "XojMsgBox.h"
+
 #include "StringUtils.h"
+#include "XojMsgBox.h"
+#include "config-paths.h"
+#include "config.h"
+#include "filesystem.h"
 #include "i18n.h"
 
 #ifdef _WIN32
@@ -20,7 +22,7 @@
 const char* PACKAGE_LOCALE_DIR = (Stacktrace::getExePath() / "../Resources/share/locale").c_str();
 #endif
 
-LanguageConfigGui::LanguageConfigGui(GladeSearchpath* gladeSearchPath, GtkWidget* w, Settings* settings) :
+LanguageConfigGui::LanguageConfigGui(GladeSearchpath* gladeSearchPath, GtkWidget* w, Settings* settings):
         GladeGui(gladeSearchPath, "settingsLanguageConfig.glade", "offscreenwindow"), settings(settings) {
     auto dropdown = get("languageSettingsDropdown");
     gtk_container_remove(GTK_CONTAINER(getWindow()), dropdown);
@@ -35,7 +37,7 @@ LanguageConfigGui::LanguageConfigGui(GladeSearchpath* gladeSearchPath, GtkWidget
                 availableLocales.push_back(d.path().filename().u8string());
             }
         }
-    } catch (fs::filesystem_error const &e) {
+    } catch (fs::filesystem_error const& e) {
         XojMsgBox::showErrorToUser(nullptr, e.what());
     }
     std::sort(availableLocales.begin(), availableLocales.end());
@@ -50,11 +52,10 @@ LanguageConfigGui::LanguageConfigGui(GladeSearchpath* gladeSearchPath, GtkWidget
     availableLocales.insert(availableLocales.begin(), _("System Default"));
 
     auto gtkAvailableLocales = gtk_list_store_new(1, G_TYPE_STRING);
-    for (auto const& i : availableLocales) {
-            GtkTreeIter iter;
-            gtk_list_store_append(gtkAvailableLocales, &iter);
-            gtk_list_store_set(gtkAvailableLocales, &iter, 0, i.c_str(), -1);
-
+    for (auto const& i: availableLocales) {
+        GtkTreeIter iter;
+        gtk_list_store_append(gtkAvailableLocales, &iter);
+        gtk_list_store_set(gtkAvailableLocales, &iter, 0, i.c_str(), -1);
     }
     gtk_combo_box_set_model(GTK_COMBO_BOX(dropdown), GTK_TREE_MODEL(gtkAvailableLocales));
 

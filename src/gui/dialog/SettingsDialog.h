@@ -17,8 +17,8 @@
 #include "util/audio/DeviceInfo.h"
 
 #include "DeviceClassConfigGui.h"
-#include "LatexSettingsPanel.h"
 #include "LanguageConfigGui.h"
+#include "LatexSettingsPanel.h"
 
 class ButtonConfigGui;
 
