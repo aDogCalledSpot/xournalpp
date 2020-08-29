@@ -24,6 +24,10 @@ const char* PACKAGE_LOCALE_DIR = (Stacktrace::getExePath() / "../Resources/share
 
 LanguageConfigGui::LanguageConfigGui(GladeSearchpath* gladeSearchPath, GtkWidget* w, Settings* settings):
         GladeGui(gladeSearchPath, "settingsLanguageConfig.glade", "offscreenwindow"), settings(settings) {
+
+    std::locale loc("de_DE.UTF-8");
+    auto& facet = std::use_facet<std::messages<char>>(loc);
+    auto cat = facet.open("xournalpp", loc);
     auto dropdown = get("languageSettingsDropdown");
     gtk_container_remove(GTK_CONTAINER(getWindow()), dropdown);
     gtk_container_add(GTK_CONTAINER(w), dropdown);
@@ -49,7 +53,7 @@ LanguageConfigGui::LanguageConfigGui(GladeSearchpath* gladeSearchPath, GtkWidget
     }
 
     // Default
-    availableLocales.insert(availableLocales.begin(), _("System Default"));
+    availableLocales.insert(availableLocales.begin(), facet.get(cat, 0, 0, "System Default"));
 
     auto gtkAvailableLocales = gtk_list_store_new(1, G_TYPE_STRING);
     for (auto const& i: availableLocales) {
@@ -65,13 +69,14 @@ LanguageConfigGui::LanguageConfigGui(GladeSearchpath* gladeSearchPath, GtkWidget
     if (auto preferred = settings->getPreferredLocale(); !preferred.empty()) {
         prefPos = std::lower_bound(availableLocales.begin(), availableLocales.end(), preferred);
         if (*prefPos != preferred) {
-            XojMsgBox::showErrorToUser(nullptr, _("Previously selected language not available anymore!"));
+            XojMsgBox::showErrorToUser(nullptr, facet.get(cat, 0, 0, "Previously selected language not available anymore!"));
 
             // Use system default
             prefPos = availableLocales.begin();
         }
     }
     gtk_combo_box_set_active(GTK_COMBO_BOX(dropdown), prefPos - availableLocales.begin());
+    facet.close(cat);
 }
 
 
